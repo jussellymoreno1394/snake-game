@@ -13,6 +13,7 @@ class Snake
   def initialize
     @positions = [[1, 0], [1, 1], [1, 2], [1, 3], [1, 4]]
     @direction = "down"
+    @growing = false
   end
 
   def draw
@@ -27,7 +28,7 @@ class Snake
   end
 
   def move
-    @positions.shift
+    @positions.shift if !@growing
     case @direction
     when "down"
       @positions.push(new_coords(head[0], head[1] + 1))
@@ -38,6 +39,11 @@ class Snake
     when "right"
       @positions.push(new_coords(head[0] + 1, head[1]))
     end
+    @growing = false
+  end
+
+  def new_coords(x, y)
+    [x % GRID_WIDTH, y % GRID_HEIGHT]
   end
 
   def can_change_direction_to(new_direction)
@@ -53,8 +59,20 @@ class Snake
     end
   end
 
-  def new_coords(x, y)
-    [x % GRID_WIDTH, y % GRID_HEIGHT]
+  def x_position
+    head[0]
+  end
+
+  def y_position
+    head[1]
+  end
+
+  def grow
+    @growing = true
+  end
+
+  def hit_itself
+    @positions.uniq.length != @positions.length
   end
 
   private
